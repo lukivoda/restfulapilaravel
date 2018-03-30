@@ -27,5 +27,22 @@ class Product extends Model
 
   }
 
+  public function seller(){
+
+      return $this->belongsTo(Seller::class);
+  }
+
+
+  public function transactions(){
+
+    return $this->hasMany(Transaction::class);
+  }
+
+
+  public function categories() {
+
+    return $this->belongsToMany(Category::class);
+  }
+
 
 }
