@@ -13,7 +13,7 @@ class User extends Authenticatable
     const VERIFIED_USER = '1';
     const UNVERIFIED_USER = '0';
 
-    const ADMIN_USER = true,
+    const ADMIN_USER = true;
     const REGULAR_USER = false;
 
 

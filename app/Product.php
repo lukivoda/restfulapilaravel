@@ -11,6 +11,7 @@ class Product extends Model
    const UNAVAILABLE_PRODUCT =  'unavailable';
 
 
+
    protected $fillable = [
      'name',
      'description',
@@ -46,3 +47,4 @@ class Product extends Model
 
 
 }
+
