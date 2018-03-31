@@ -2,9 +2,11 @@
 
 namespace App;
 
-
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Passport\HasApiTokens;
+use App\Transformers\UserTransformer;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -13,10 +15,11 @@ class User extends Authenticatable
     const VERIFIED_USER = '1';
     const UNVERIFIED_USER = '0';
 
-    const ADMIN_USER = true;
-    const REGULAR_USER = false;
+    const ADMIN_USER = 'true';
+    const REGULAR_USER = 'false';
 
-
+ //  we are using this so that laravel don't expect sellers and buyers tables because they don't exist(users table is used for Seller and Buyer model that we are extending them from User model class)
+    protected $table = 'users';
 
 
     /**
@@ -25,7 +28,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password','verified','verification_token','admin'
+        'name',
+        'email',
+        'password',
+        'verified',
+        'verification_token',
+        'admin',
     ];
 
     /**
@@ -36,31 +44,24 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'verification_token'
-
+        'verification_token',
     ];
 
+  
 
 
-
-    public function isVerified(){
-
-        return $this->verified = USER::VERIFIED_USER;
+    public function isVerified()
+    {
+        return $this->verified == User::VERIFIED_USER;
     }
 
-
-    public function isAdmin(){
-
-        return $this->admin = USER::ADMIN_USER;
+    public function isAdmin()
+    {
+        return $this->admin == User::ADMIN_USER;
     }
 
-
-//Generate a more truly "random" alpha-numeric string
-   public function generateVerificationCode(){
-
-       return str_random(40);
-   }
-
-
-
+    public static function generateVerificationCode()
+    {
+        return str_random(40);
+    }
 }
