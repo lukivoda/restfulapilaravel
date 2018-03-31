@@ -17,7 +17,6 @@ class UserController extends Controller
     {
         $users = User::all();
        
-
         return response()->json(['data'=>$users],200);
      }
 
@@ -29,7 +28,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -40,7 +38,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        // we need findOrFail method to get en exception if we don't have the user we want(we are going to handle the exception later so that we can have proper json response in that case)
+              $user = User::findOrFail($id);
+
+              return response()->json(['data' =>$user],200);
+
     }
 
    
