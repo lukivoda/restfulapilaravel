@@ -38,7 +38,8 @@ class UserController extends Controller
        ];
 
        $this->validate($request,$rules);
-
+      
+      // everything  that we get from the user request(client)
        $data = $request->all();
 
        $data['password'] =  bcrypt($request->password);
@@ -79,7 +80,64 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $user  = User::findOrFail($id);
+
+        $rules  = [
+            //email input must be email and unique(except for the email that belongs to the current user)
+           'email' => "email|unique:users,email,".$user->id,
+           'password' => "min:6|confirmed",
+           // admin field must be one of this  2 values(true or false)
+           'admin' => "in:".User::ADMIN_USER.",".User::REGULAR_USER
+        ];
+
+         // if we have name key in request collection
+        if($request->has('name')){
+           $user->name = $request->name;
+        }
+
+         // if we have an email key in request collection and the email that we are getting from client is not equal with the user's email
+        if($request->has('email') && $request->email != $user->email){
+           $user->email = $request->email;
+           // user is not longer verified
+           $user->verified = User::UNVERIFIED_USER;
+           //generate new verification token
+           $user->verification_token = User::generateVerificationCode();
+           //updateing the email in the users table
+           $user->email =$request->email;
+        }
+
+
+
+        if($request->has('password')){
+            //encrypting the new user password
+            $user->password = bcrypt($request->password);
+        }
+
+
+        if($request->has('admin')){
+            //if user is not verified
+           if(!$user->verified){
+            // 409 is conflict
+            return response()->json(["error" => " Only verified users can modify the admin field","code" =>"409"],409);
+           } 
+
+           $user->admin = $request->admin; 
+           
+       }
+
+
+
+       if(!$user->isDirty()) {
+        //422 is unprocessed : the server understand the content of the request but can not process the request
+         return response()->json(["error" => "You need to specify a different value to update","code" =>"422"],422);
+       }
+
+       $user->save();
+
+       // status 200 0K
+        return response()->json(['data' =>$user],200);
+      
+
     }
 
     /**
