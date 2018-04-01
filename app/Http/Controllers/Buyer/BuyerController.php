@@ -16,7 +16,7 @@ class BuyerController extends Controller
     public function index()
     {
 
-        // getting all the users that have transactions method(Buyer model is extending Users)
+        // getting all the users that have transactions method(Buyer model is extending User)
        $buyers = Buyer::has('transactions')->get();
 
        return response()->json(['data' => $buyers],200);
@@ -32,7 +32,7 @@ class BuyerController extends Controller
      */
     public function show($id)
     {
-       // finding the user that has transactions method(Buyer model is extending Users) or fail(throw an exception)
+       // finding the user that has transactions method(Buyer model is extending User) or fail(throw an exception)
         $buyer = Buyer::has('transactions')->findOrFail($id);
        
         return response()->json(['data'=>$buyer],200);
