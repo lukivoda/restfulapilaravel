@@ -15,31 +15,14 @@ class BuyerController extends Controller
      */
     public function index()
     {
+
+        // getting all the users that have transactions method(Buyer model is extending Users)
        $buyers = Buyer::has('transactions')->get();
 
        return response()->json(['data' => $buyers],200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+    
 
     /**
      * Display the specified resource.
@@ -49,40 +32,12 @@ class BuyerController extends Controller
      */
     public function show($id)
     {
-        //
+       // finding the user that has transactions method(Buyer model is extending Users) or fail(throw an exception)
+        $buyer = Buyer::has('transactions')->findOrFail($id);
+       
+        return response()->json(['data'=>$buyer],200);
+
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
+   
 }
