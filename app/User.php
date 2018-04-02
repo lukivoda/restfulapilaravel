@@ -1,27 +1,15 @@
 <?php
-
 namespace App;
-
-use Laravel\Passport\HasApiTokens;
-use App\Transformers\UserTransformer;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
 class User extends Authenticatable
 {
     use Notifiable;
-
     const VERIFIED_USER = '1';
     const UNVERIFIED_USER = '0';
-
     const ADMIN_USER = 'true';
     const REGULAR_USER = 'false';
-
- //  we are using this so that laravel don't expect sellers and buyers tables because they don't exist(users table is used for Seller and Buyer model that we are extending them from User model class)
     protected $table = 'users';
-
-
     /**
      * The attributes that are mass assignable.
      *
@@ -36,6 +24,9 @@ class User extends Authenticatable
         'admin',
     ];
 
+
+
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -47,13 +38,39 @@ class User extends Authenticatable
         'verification_token',
     ];
 
-  
+
+
+     /*inserting new records the database
+       mutator:  This mutator will be automatically called when we attempt to set the value(new column) of the name(name of column) attribute on the model
+     */
+
+    public function setNameAttribute($name)
+    {
+        $this->attributes['name'] = strtolower($name);
+    }
+
+    /*accessor The accessor will automatically be called by Eloquent when attempting to retrieve the value of the name(name of column) attribute
+     */
+
+     public function getNameAttribute($name)
+    {
+        return ucwords($name);
+    }
+
+    /*inserting new records in the database
+       mutator:  This mutator will be automatically called when we attempt to set the value(new column) of the email(name of column) attribute on the model
+     */
+    public function setEmailAttribute($email)
+    {
+        $this->attributes['email'] = strtolower($email);
+    }
 
 
     public function isVerified()
     {
         return $this->verified == User::VERIFIED_USER;
     }
+
 
     public function isAdmin()
     {
@@ -64,4 +81,11 @@ class User extends Authenticatable
     {
         return str_random(40);
     }
+
+
+
+
 }
+
+
+
