@@ -4,9 +4,9 @@ namespace App\Http\Controllers\User;
 
 use App\User;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
     /**
      * Display a listing of the resource.
@@ -17,7 +17,7 @@ class UserController extends Controller
     {
         $users = User::all();
        
-        return response()->json(['data'=>$users],200);
+        return $this->showAll($users);
      }
 
     /**
@@ -49,7 +49,7 @@ class UserController extends Controller
 
        $user = User::create($data);
        // status 201 data created
-       return response()->json(['data' => $user],201);
+         return $this->showOne($user,201);
    
        
 
@@ -66,7 +66,7 @@ class UserController extends Controller
         // we need findOrFail method to get en exception if we don't have the user we want(we are going to handle the exception later so that we can have proper json response in that case)
               $user = User::findOrFail($id);
                      // status 200 0K
-              return response()->json(['data' =>$user],200);
+              return $this->showOne($user);
 
     }
 
@@ -118,7 +118,7 @@ class UserController extends Controller
             //if user is not verified
            if(!$user->verified){
             // 409 is conflict
-            return response()->json(["error" => " Only verified users can modify the admin field","code" =>"409"],409);
+            return $this->errorResponse(" Only verified users can modify the admin field",409);
            } 
 
            $user->admin = $request->admin; 
@@ -129,13 +129,13 @@ class UserController extends Controller
 
        if(!$user->isDirty()) {
         //422 is unprocessed : the server understand the content of the request but can not process the request
-         return response()->json(["error" => "You need to specify a different value to update","code" =>"422"],422);
+        return $this->errorResponse(" You need to specify a different value to update",422);
        }
 
        $user->save();
 
        // status 200 0K
-        return response()->json(['data' =>$user],200);
+          return $this->showOne($user);
       
 
     }
@@ -152,7 +152,7 @@ class UserController extends Controller
         $user->delete();
 
          // status 200 0K
-        return response()->json(['data' =>$user],200);
+          return $this->showOne($user);
 
     }
 }
